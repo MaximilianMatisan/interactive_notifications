@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: .fromSeed(seedColor: Colors.teal),
       ),
-      home: const MyHomePage(title: 'Study timer'),
+      home: const MyHomePage(),
     );
   }
 }
