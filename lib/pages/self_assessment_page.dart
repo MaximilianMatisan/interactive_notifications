@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:interactive_notifications/pages/home_page.dart';
 
 import '../widgets/self_assessment.dart';
 
@@ -14,6 +15,16 @@ class SelfAssessmentPage extends StatefulWidget {
 
 class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
 
+  void _rateStudySession() {
+    _switchToHomescreen();
+  }
+  void _switchToHomescreen() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => MyHomePage())
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +33,13 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: SelfAssessment()
+        child: Column(
+          mainAxisAlignment: .center,
+          children: [
+            Text( 'Rate your study session!' ),
+            SelfAssessment(onPress: _rateStudySession,)
+          ]
+        )
       ),
     );
   }

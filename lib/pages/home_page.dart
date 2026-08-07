@@ -58,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _switchToSelfAssessment() {
-    Navigator.push(
+    Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => SelfAssessmentPage())
     );
