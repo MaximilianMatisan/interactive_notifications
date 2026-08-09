@@ -5,6 +5,7 @@ import 'package:interactive_notifications/pages/self_assessment_page.dart';
 
 import '../widgets/timer_buttons.dart';
 import '../widgets/timer_display.dart';
+import '../util/notifications.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -41,6 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _endLearningTimer() {
     int studiedTime = _resetTimer();
     if (studiedTime > 0) {
+      triggerSelfAssessmentNotification();
       _switchToSelfAssessment();
     }
   }
