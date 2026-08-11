@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:interactive_notifications/pages/self_assessment_page.dart';
+import 'package:live_activities/live_activities.dart';
 
 import '../widgets/timer_buttons.dart';
 import '../widgets/timer_display.dart';
@@ -17,10 +18,38 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final _liveActivityPlugin = LiveActivities();
+  String? _activityId;
+
   int _secondsPassed = 0;
   Timer? _timer;
 
+  @override
+  void initState() {
+    super.initState();
+    _liveActivityPlugin.init(
+        appGroupId: 'group.maxi.test.interactivenotification.a',
+    );
+  }
+  Future<void> _startLiveActivity() async {
+    _activityId = await _liveActivityPlugin.createActivity(
+      DateTime.now().millisecondsSinceEpoch.toString(),
+      {'greeting': 'HOLA, das geht :)'},
+      iOSEnableRemoteUpdates: false,
+    );
+    print('Live Activity started: $_activityId');
+  }
+
+  Future<void> _endLiveActivities() async {
+    await _liveActivityPlugin.endAllActivities();
+    _activityId = null;
+    print('Live Activity ended!');
+  }
+
   void _toggleTimer() {
+    if (_activityId == null) {
+      _startLiveActivity();
+    }
     setState(() {
       if (_timer == null) {
         _timer = Timer.periodic(
@@ -40,6 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _endLearningTimer() {
+    _endLiveActivities();
     int studiedTime = _resetTimer();
     if (studiedTime > 0) {
       triggerSelfAssessmentNotification();
