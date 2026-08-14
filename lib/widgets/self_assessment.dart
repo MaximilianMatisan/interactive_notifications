@@ -25,7 +25,7 @@ class SelfAssessment extends StatelessWidget {
               onPressed: onPress,
               icon: Icon(mood.icon, color: mood.color),
               style: IconButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primaryContainer
+                backgroundColor: Theme.of(context).colorScheme.surface
               )
             )
         ],

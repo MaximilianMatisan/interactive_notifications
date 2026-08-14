@@ -34,10 +34,29 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _startLiveActivity() async {
     _activityId = await _liveActivityPlugin.createActivity(
       DateTime.now().millisecondsSinceEpoch.toString(),
-      {'greeting': 'HOLA, das geht :)'},
+      {
+        'backgroundColor': Theme.of(context).colorScheme.inversePrimary.toARGB32(),
+        'containerColor': Theme.of(context).colorScheme.secondaryContainer.toARGB32(),
+        'textColor': Theme.of(context).colorScheme.primary.toARGB32(),
+        'currentSegmentStartTime': DateTime.now().millisecondsSinceEpoch.toString(),
+        'secondsPassed': _secondsPassed.toString(),
+        'isPaused': !_isRunning
+      },
+
       iOSEnableRemoteUpdates: false,
     );
     print('Live Activity started: $_activityId');
+  }
+  Future<void> _updateLiveActivity() async {
+    await _liveActivityPlugin.updateActivity(
+      _activityId!,
+      {
+        'currentSegmentStartTime': DateTime.now().millisecondsSinceEpoch.toString(),
+        'secondsPassed': _secondsPassed.toString(),
+        'isPaused': !_isRunning
+      },
+    );
+    print('Live Activity updated!');
   }
 
   Future<void> _endLiveActivities() async {
@@ -47,9 +66,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _toggleTimer() {
-    if (_activityId == null) {
-      _startLiveActivity();
-    }
     setState(() {
       if (_timer == null) {
         _timer = Timer.periodic(
@@ -61,6 +77,11 @@ class _MyHomePageState extends State<MyHomePage> {
         _timer = null;
       }
     });
+    if (_activityId == null) {
+      _startLiveActivity();
+    } else {
+      _updateLiveActivity();
+    }
   }
   void _incrementSeconds() {
     setState(() {
