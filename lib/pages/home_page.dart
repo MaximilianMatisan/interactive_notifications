@@ -128,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   }
 
   int _resetTimer() {
-    int finalStudyTime = _secondsPassed; //TODO
+    int finalStudyTime = _secondsPassed;
     setState(() {
       _resetTimerVariables();
     });

@@ -28,25 +28,31 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: LiveActivitiesAppAttributes.self) { context in
             // Lock screen/banner UI goes here
+            let backgroundColor = getBackgroundColor(context: context)
+            let containerColor = getContainerColor(context: context)
+            let textColor = getTextColor(context: context)
+            let isPaused = sharedDefault.bool(forKey: context.attributes.prefixedKey("isPaused"))
+
             VStack {
                 HStack{
                     getShownTime(context: context)
                         .padding(DEFAULT_PADDING)
                         .background(
-                            RoundedRectangle(cornerRadius: DEFAULT_CORNER_RADIUS)
-                                .fill(getContainerColor(context: context))
+                            RoundedRectangle(cornerRadius: 2*DEFAULT_CORNER_RADIUS)
+                                .fill(containerColor)
                         )
                     Spacer()
-                    pauseButton(context: context)
+                    createLiveActivityButtons(isPaused: isPaused, textColor: textColor, containerColor: containerColor)
                 }.padding(DEFAULT_PADDING)
             }
-            .activityBackgroundTint(getBackgroundColor(context: context))
+            .activityBackgroundTint(backgroundColor)
             .activitySystemActionForegroundColor(Color.black)
 
         } dynamicIsland: { context in
-            DynamicIsland {
-                // Expanded UI goes here.  Compose the expanded UI through
-                // various regions, like leading/trailing/center/bottom
+            
+            let backgroundColor = getBackgroundColor(context: context)
+            
+            return DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
                     Text("Leading")
                 }
@@ -55,7 +61,6 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
                 }
                 DynamicIslandExpandedRegion(.bottom) {
                     Text("Bottom")
-                    // more content
                 }
             } compactLeading: {
                 Text("📚")
@@ -64,23 +69,46 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
             } minimal: {
                 Text("📚")
             }
-            .keylineTint(Color.green)
+            .keylineTint(backgroundColor)
         }
     }
-    func pauseButton(context: ActivityViewContext<LiveActivitiesAppAttributes>) -> some View  {
-        return Button(action: {}) {
-            Image(systemName: "pause.fill")
-                .font(.title)
+    func createLiveActivityButtons(isPaused: Bool, textColor: Color, containerColor: Color) -> some View {
+        let toggleIcon = isPaused ? "play.fill" : "pause.fill"
+        return HStack {
+            createButton(
+                textColor: textColor,
+                containerColor: containerColor,
+                iconSystemName: toggleIcon,
+                action: { }
+            )
+            createButton(
+                textColor: textColor,
+                containerColor: containerColor,
+                iconSystemName: "stop.fill",
+                action: { }
+            )
+        }
+    }
+    func createButton(
+        textColor: Color,
+        containerColor: Color,
+        iconSystemName: String,
+        action: @escaping () -> Void
+    ) -> some View  {
+        return Button(action: action) {
+            Image(systemName: iconSystemName)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 20, height: 20)
                 .padding(DEFAULT_PADDING)
-                .foregroundColor(getTextColor(context: context))
-                .background(getContainerColor(context: context),
+                .foregroundColor(textColor)
+                .background(containerColor,
                         in: RoundedRectangle(cornerRadius: DEFAULT_CORNER_RADIUS)
                 )
         }
         .buttonStyle(.plain)
-        .padding(DEFAULT_PADDING)
     }
-    
+
     func getShownTime(context: ActivityViewContext<LiveActivitiesAppAttributes>) -> Text {
         let currentSegmentStartTime = Int(sharedDefault.string(forKey: context.attributes.prefixedKey("currentSegmentStartTime")) ?? "0") ?? 0
         let accumulatedSeconds = Int(sharedDefault.string(forKey: context.attributes.prefixedKey("accumulatedSeconds")) ?? "0") ?? 0
