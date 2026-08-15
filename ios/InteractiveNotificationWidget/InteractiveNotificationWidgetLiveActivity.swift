@@ -70,6 +70,7 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
     func pauseButton(context: ActivityViewContext<LiveActivitiesAppAttributes>) -> some View  {
         return Button(action: {}) {
             Image(systemName: "pause.fill")
+                .font(.title)
                 .padding(DEFAULT_PADDING)
                 .foregroundColor(getTextColor(context: context))
                 .background(getContainerColor(context: context),
@@ -82,13 +83,13 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
     
     func getShownTime(context: ActivityViewContext<LiveActivitiesAppAttributes>) -> Text {
         let currentSegmentStartTime = Int(sharedDefault.string(forKey: context.attributes.prefixedKey("currentSegmentStartTime")) ?? "0") ?? 0
-        let secondsPassed = Int(sharedDefault.string(forKey: context.attributes.prefixedKey("secondsPassed")) ?? "0") ?? 0
+        let accumulatedSeconds = Int(sharedDefault.string(forKey: context.attributes.prefixedKey("accumulatedSeconds")) ?? "0") ?? 0
         let isPaused = sharedDefault.bool(forKey: context.attributes.prefixedKey("isPaused"))
         
-        let tempStart = Date(timeIntervalSince1970: Double(currentSegmentStartTime)/1000).addingTimeInterval(-Double(secondsPassed))
+        let tempStart = Date(timeIntervalSince1970: Double(currentSegmentStartTime)/1000).addingTimeInterval(-Double(accumulatedSeconds))
     
         let shownText = if (isPaused) {
-            Text(formatTime(seconds: secondsPassed))
+            Text(formatTime(seconds: accumulatedSeconds))
         } else {
             Text(timerInterval: tempStart...Date.distantFuture, countsDown: false)
         }
