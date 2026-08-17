@@ -8,17 +8,11 @@
 import ActivityKit
 import WidgetKit
 import SwiftUI
+import AppIntents
+
 
 // Create shared default with custom group
 let sharedDefault = UserDefaults(suiteName: "group.maxi.test.interactivenotification.a")!
-
-struct LiveActivitiesAppAttributes: ActivityAttributes, Identifiable {
-  public typealias LiveDeliveryData = ContentState // don't forget to add this line, otherwise, live activity will not display it.
-
-  public struct ContentState: Codable, Hashable { }
-
-  var id = UUID()
-}
 
 let DEFAULT_PADDING = 10.0;
 let DEFAULT_CORNER_RADIUS = DEFAULT_PADDING;
@@ -27,7 +21,6 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
     
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: LiveActivitiesAppAttributes.self) { context in
-            // Lock screen/banner UI goes here
             let backgroundColor = getBackgroundColor(context: context)
             let containerColor = getContainerColor(context: context)
             let textColor = getTextColor(context: context)
@@ -51,21 +44,22 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
         } dynamicIsland: { context in
             
             let backgroundColor = getBackgroundColor(context: context)
+            let shownTime = getShownTime(context: context)
             
             return DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-                    Text("Leading")
+                    Text("📚").font(.title)
                 }
-                DynamicIslandExpandedRegion(.trailing) {
-                    Text("Trailing")
-                }
-                DynamicIslandExpandedRegion(.bottom) {
-                    Text("Bottom")
+                DynamicIslandExpandedRegion(.center) {
+                    VStack {
+                        Text("Time studied:").font(.title3)
+                        shownTime
+                    }
                 }
             } compactLeading: {
                 Text("📚")
             } compactTrailing: {
-                getShownTime(context: context)
+                shownTime
             } minimal: {
                 Text("📚")
             }
@@ -79,13 +73,13 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
                 textColor: textColor,
                 containerColor: containerColor,
                 iconSystemName: toggleIcon,
-                action: { }
+                intent: ToggleTimerIntent()
             )
             createButton(
                 textColor: textColor,
                 containerColor: containerColor,
                 iconSystemName: "stop.fill",
-                action: { }
+                intent: EndTimerIntent()
             )
         }
     }
@@ -93,9 +87,9 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
         textColor: Color,
         containerColor: Color,
         iconSystemName: String,
-        action: @escaping () -> Void
+        intent: any AppIntent
     ) -> some View  {
-        return Button(action: action) {
+        return Button(intent: intent) {
             Image(systemName: iconSystemName)
                 .resizable()
                 .scaledToFit()
@@ -149,11 +143,6 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
 }
 
 
-extension LiveActivitiesAppAttributes {
-    func prefixedKey(_ key: String) -> String {
-        return "\(id)_\(key)"
-    }
-}
 
 extension Color {
     init(argb: Int) {
