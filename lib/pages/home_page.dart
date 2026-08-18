@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:interactive_notifications/pages/self_assessment_page.dart';
+import 'package:interactive_notifications/util/timer_bridge.dart';
 import 'package:live_activities/live_activities.dart';
 
 import '../widgets/timer_buttons.dart';
@@ -24,7 +25,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   Timer? _timer;
   int _accumulatedSeconds = 0;
   int _secondsPassed = 0;
-  DateTime? _startOfCurSegment;
+  DateTime? _currentSegmentStartTime;
   bool _isPaused = true;
 
   @override
@@ -46,18 +47,63 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _recalculateSeconds();
+      _syncFromNative();
     }
   }
 
-  Future<void> _startLiveActivity() async {
+  Future<void> _syncFromNative() async {
+    final finalTime = await TimerBridge.consumeFinishedSeconds();
+
+    if (finalTime != null) {
+      setState(_resetTimerVariables);
+
+      _activityId = null;
+      if (finalTime > 0) {
+        triggerSelfAssessmentNotification();
+        _switchToSelfAssessment();
+      }
+      return;
+    }
+
+    final nativeState = await TimerBridge.getState();
+
+    if (nativeState == null) {
+      setState(_resetTimerVariables);
+      _activityId = null;
+      return;
+    }
+
+    final tempIsPaused = nativeState['isPaused'] as bool;
+    final tempAccumulatedSeconds = nativeState['accumulatedSeconds'] as int;
+    final tempCurrentSegmentStartTime = nativeState['currentSegmentStartTimeMs'] as int;
+
+    setState(() {
+      _isPaused = tempIsPaused;
+      _accumulatedSeconds = tempAccumulatedSeconds;
+
+      _currentSegmentStartTime =
+        _isPaused ? null : DateTime.fromMillisecondsSinceEpoch(tempCurrentSegmentStartTime);
+
+      _secondsPassed =
+        _isPaused
+            ? _accumulatedSeconds
+            : _accumulatedSeconds + DateTime.now().difference(_currentSegmentStartTime!).inSeconds;
+    });
+
+    _timer?.cancel();
+    _timer = _isPaused
+        ? null
+        : Timer.periodic(const Duration(seconds: 1), (_) => _recalculateSeconds());
+  }
+
+  Future<void> _startLiveActivity(DateTime now) async {
     _activityId = await _liveActivityPlugin.createActivity(
       DateTime.now().millisecondsSinceEpoch.toString(),
       {
         'backgroundColor': Theme.of(context).colorScheme.inversePrimary.toARGB32(),
         'containerColor': Theme.of(context).colorScheme.secondaryContainer.toARGB32(),
         'textColor': Theme.of(context).colorScheme.primary.toARGB32(),
-        'currentSegmentStartTime': DateTime.now().millisecondsSinceEpoch.toString(),
+        'currentSegmentStartTimeMs': now.millisecondsSinceEpoch.toString(),
         'accumulatedSeconds': _accumulatedSeconds.toString(),
         'isPaused': _isPaused
       },
@@ -66,11 +112,11 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     );
     print('Live Activity started: $_activityId');
   }
-  Future<void> _updateLiveActivity() async {
+  Future<void> _updateLiveActivity(DateTime now) async {
     await _liveActivityPlugin.updateActivity(
       _activityId!,
       {
-        'currentSegmentStartTime': DateTime.now().millisecondsSinceEpoch.toString(),
+        'currentSegmentStartTimeMs': now.millisecondsSinceEpoch.toString(),
         'accumulatedSeconds': _accumulatedSeconds.toString(),
         'isPaused': _isPaused
       },
@@ -81,21 +127,22 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   Future<void> _endLiveActivities() async {
     await _liveActivityPlugin.endAllActivities();
     _activityId = null;
-    print('Live Activity ended!');
+    print('Live Activities ended!');
   }
 
   void _toggleTimer() {
+    final now = DateTime.now();
     setState(() {
       if (_isPaused && _timer == null) {
-        _startOfCurSegment = DateTime.now();
+        _currentSegmentStartTime = now;
         _isPaused = false;
 
         _timer = Timer.periodic(
-            const Duration(seconds: 1),
+            const Duration(milliseconds: 500),
                 (_) => _recalculateSeconds()
         );
       } else {
-        _startOfCurSegment = null;
+        _currentSegmentStartTime = null;
         _accumulatedSeconds = _secondsPassed;
         _isPaused = true;
 
@@ -104,14 +151,14 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
       }
     });
     if (_activityId == null) {
-      _startLiveActivity();
+      _startLiveActivity(now);
     } else {
-      _updateLiveActivity();
+      _updateLiveActivity(now);
     }
   }
   void _recalculateSeconds() {
-    if (!_isPaused && _startOfCurSegment != null) {
-      int elapsedInCurSegment = DateTime.now().difference(_startOfCurSegment!).inSeconds;
+    if (!_isPaused && _currentSegmentStartTime != null) {
+      int elapsedInCurSegment = DateTime.now().difference(_currentSegmentStartTime!).inSeconds;
       setState(() {
         _secondsPassed = _accumulatedSeconds + elapsedInCurSegment;
       });
@@ -143,7 +190,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     _accumulatedSeconds = 0;
     _secondsPassed = 0;
     _isPaused = true;
-    _startOfCurSegment = null;
+    _currentSegmentStartTime = null;
   }
 
   void _switchToSelfAssessment() {

@@ -25,6 +25,8 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
             let containerColor = getContainerColor(context: context)
             let textColor = getTextColor(context: context)
             let isPaused = sharedDefault.bool(forKey: context.attributes.prefixedKey("isPaused"))
+            
+            let activityID = context.attributes.id.uuidString
 
             VStack {
                 HStack{
@@ -35,7 +37,12 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
                                 .fill(containerColor)
                         )
                     Spacer()
-                    createLiveActivityButtons(isPaused: isPaused, textColor: textColor, containerColor: containerColor)
+                    createLiveActivityButtons(
+                        activityID: activityID,
+                        isPaused: isPaused,
+                        textColor: textColor,
+                        containerColor: containerColor
+                    )
                 }.padding(DEFAULT_PADDING)
             }
             .activityBackgroundTint(backgroundColor)
@@ -66,20 +73,26 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
             .keylineTint(backgroundColor)
         }
     }
-    func createLiveActivityButtons(isPaused: Bool, textColor: Color, containerColor: Color) -> some View {
+    func createLiveActivityButtons(
+        activityID: String,
+        isPaused: Bool,
+        textColor: Color,
+        containerColor: Color
+    ) -> some View {
+        
         let toggleIcon = isPaused ? "play.fill" : "pause.fill"
         return HStack {
             createButton(
                 textColor: textColor,
                 containerColor: containerColor,
                 iconSystemName: toggleIcon,
-                intent: ToggleTimerIntent()
+                intent: ToggleTimerIntent(activityId: activityID)
             )
             createButton(
                 textColor: textColor,
                 containerColor: containerColor,
                 iconSystemName: "stop.fill",
-                intent: EndTimerIntent()
+                intent: EndTimerIntent(activityId: activityID)
             )
         }
     }
@@ -104,7 +117,7 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
     }
 
     func getShownTime(context: ActivityViewContext<LiveActivitiesAppAttributes>) -> Text {
-        let currentSegmentStartTime = Int(sharedDefault.string(forKey: context.attributes.prefixedKey("currentSegmentStartTime")) ?? "0") ?? 0
+        let currentSegmentStartTime = Int(sharedDefault.string(forKey: context.attributes.prefixedKey("currentSegmentStartTimeMs")) ?? "0") ?? 0
         let accumulatedSeconds = Int(sharedDefault.string(forKey: context.attributes.prefixedKey("accumulatedSeconds")) ?? "0") ?? 0
         let isPaused = sharedDefault.bool(forKey: context.attributes.prefixedKey("isPaused"))
         
@@ -123,10 +136,15 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
         
     }
     func formatTime(seconds: Int) -> String {
-        let mins = seconds / 60
+        let hs = seconds / 60 / 60
+        let mins = (seconds / 60) % 60
         let secs = seconds % 60
         
-        return String(format: "%d:%02d", mins, secs)
+        if hs <= 0 {
+            return String(format: "%d:%02d", mins, secs)
+        } else {
+            return String(format: "%d:%02d:%02d", hs, mins, secs)
+        }
     }
     func getBackgroundColor(context: ActivityViewContext<LiveActivitiesAppAttributes>) -> Color {
         let backgroundColor = sharedDefault.integer(forKey: context.attributes.prefixedKey("backgroundColor"))

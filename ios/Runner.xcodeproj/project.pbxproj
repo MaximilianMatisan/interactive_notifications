@@ -15,6 +15,8 @@
 		542DF8F3302A241900AD914F /* InteractiveNotificationWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 542DF8DD302A241800AD914F /* InteractiveNotificationWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		546E19E330326A5A000726B3 /* SharedLiveActivityTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546E19DC30326A5A000726B3 /* SharedLiveActivityTypes.swift */; };
 		546E19E630326A5A000726B3 /* SharedLiveActivityTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546E19DC30326A5A000726B3 /* SharedLiveActivityTypes.swift */; };
+		546E1A9D30349BCB000726B3 /* SharedTimerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546E1A9C30349BC6000726B3 /* SharedTimerState.swift */; };
+		546E1A9E30349BCB000726B3 /* SharedTimerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546E1A9C30349BC6000726B3 /* SharedTimerState.swift */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */; };
 		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
@@ -76,6 +78,7 @@
 		542DF8FA302A252900AD914F /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		542DF8FB302A299100AD914F /* InteractiveNotificationWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = InteractiveNotificationWidgetExtension.entitlements; sourceTree = "<group>"; };
 		546E19DC30326A5A000726B3 /* SharedLiveActivityTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedLiveActivityTypes.swift; sourceTree = "<group>"; };
+		546E1A9C30349BC6000726B3 /* SharedTimerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedTimerState.swift; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -98,10 +101,17 @@
 			);
 			target = 542DF8DC302A241800AD914F /* InteractiveNotificationWidgetExtension */;
 		};
+		546E1A9B30349A79000726B3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				CustomButtonIntents.swift,
+			);
+			target = 97C146ED1CF9000F007C117D /* Runner */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		542DF8E3302A241800AD914F /* InteractiveNotificationWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (542DF8F8302A241900AD914F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = InteractiveNotificationWidget; sourceTree = "<group>"; };
+		542DF8E3302A241800AD914F /* InteractiveNotificationWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (546E1A9B30349A79000726B3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 542DF8F8302A241900AD914F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = InteractiveNotificationWidget; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,6 +167,7 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
+				546E1A9C30349BC6000726B3 /* SharedTimerState.swift */,
 				542DF8FB302A299100AD914F /* InteractiveNotificationWidgetExtension.entitlements */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
@@ -384,6 +395,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				546E1A9D30349BCB000726B3 /* SharedTimerState.swift in Sources */,
 				546E19E330326A5A000726B3 /* SharedLiveActivityTypes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -392,6 +404,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				546E1A9E30349BCB000726B3 /* SharedTimerState.swift in Sources */,
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				546E19E630326A5A000726B3 /* SharedLiveActivityTypes.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
@@ -497,7 +510,7 @@
 				DEVELOPMENT_TEAM = WQY34X9ND8;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -811,7 +824,7 @@
 				DEVELOPMENT_TEAM = WQY34X9ND8;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -836,7 +849,7 @@
 				DEVELOPMENT_TEAM = WQY34X9ND8;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

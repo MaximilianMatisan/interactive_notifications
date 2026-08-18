@@ -10,9 +10,7 @@ import ActivityKit
 
 struct LiveActivitiesAppAttributes: ActivityAttributes, Identifiable {
   public typealias LiveDeliveryData = ContentState
-  public struct ContentState: Codable, Hashable {
-      
-  }
+  public struct ContentState: Codable, Hashable { }
   var id = UUID()
 }
 

@@ -10,16 +10,34 @@ import AppIntents
 
 struct ToggleTimerIntent: LiveActivityIntent {
     static var title: LocalizedStringResource { "Toggle timer" }
+    static var isDiscoverable: Bool { false }
+    
+    @Parameter(title:"Activity Id")
+    var activityId: String
+
+    init() {}
+    init(activityId: String) { self.activityId = activityId }
     
     func perform() async throws -> some IntentResult {
-        .result()
+        SharedTimerState.toggle(id: activityId)
+        await SharedTimerState.refresh(id: activityId)
+        return .result()
     }
 }
 
 struct EndTimerIntent: LiveActivityIntent {
     static var title: LocalizedStringResource { "End timer" }
+    static var isDiscoverable: Bool { false }
     
+    @Parameter(title:"Activity Id")
+    var activityId: String
+    
+    init() {}
+    init(activityId: String) { self.activityId = activityId }
+
     func perform() async throws -> some IntentResult {
-        .result()
+        SharedTimerState.safeFinalTime(id: activityId)
+        await SharedTimerState.end(id: activityId)
+        return .result()
     }
 }
