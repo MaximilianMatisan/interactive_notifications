@@ -45,8 +45,8 @@ struct EndTimerIntent: LiveActivityIntent {
     
     func sendSelfAssessmentNF() async {
         let content = UNMutableNotificationContent();
-        content.title = "TEST NOTIFICATION!"
-        content.body = "SELF ASSESS YOUR STUDY SESSION"
+        content.title = "📚 Study session ended."
+        content.body = "Rate your recent study session!"
         
         let uuidString = UUID().uuidString
         
@@ -56,7 +56,7 @@ struct EndTimerIntent: LiveActivityIntent {
         do {
           try await notificationCenter.add(request)
         } catch {
-            
+            print("Error: \(error)")
         }
     }
 }
