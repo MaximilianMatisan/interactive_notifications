@@ -7,6 +7,7 @@
 
 import WidgetKit
 import AppIntents
+import UserNotifications
 
 struct ToggleTimerIntent: LiveActivityIntent {
     static var title: LocalizedStringResource { "Toggle timer" }
@@ -34,10 +35,28 @@ struct EndTimerIntent: LiveActivityIntent {
     
     init() {}
     init(activityId: String) { self.activityId = activityId }
-
+    
     func perform() async throws -> some IntentResult {
         SharedTimerState.safeFinalTime(id: activityId)
         await SharedTimerState.end(id: activityId)
+        await sendSelfAssessmentNF()
         return .result()
+    }
+    
+    func sendSelfAssessmentNF() async {
+        let content = UNMutableNotificationContent();
+        content.title = "TEST NOTIFICATION!"
+        content.body = "SELF ASSESS YOUR STUDY SESSION"
+        
+        let uuidString = UUID().uuidString
+        
+        let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: nil)
+        let notificationCenter = UNUserNotificationCenter.current()
+        
+        do {
+          try await notificationCenter.add(request)
+        } catch {
+            
+        }
     }
 }

@@ -7,7 +7,6 @@ import 'package:live_activities/live_activities.dart';
 
 import '../widgets/timer_buttons.dart';
 import '../widgets/timer_display.dart';
-import '../util/notifications.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -59,7 +58,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
       _activityId = null;
       if (finalTime > 0) {
-        triggerSelfAssessmentNotification();
         _switchToSelfAssessment();
       }
       return;
@@ -169,7 +167,6 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     _endLiveActivities();
     int studiedTime = _resetTimer();
     if (studiedTime > 0) {
-      triggerSelfAssessmentNotification();
       _switchToSelfAssessment();
     }
   }
