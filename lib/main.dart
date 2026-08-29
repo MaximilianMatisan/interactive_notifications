@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:interactive_notifications/pages/home_page.dart';
+import 'package:interactive_notifications/util/notifications.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initNotifications();
   runApp(const MyApp());
 }
 
