@@ -38,16 +38,24 @@ enum SharedTimerState {
     }
     
     static func toggle(id: String) {
+        if (isPaused(id: id)) {
+            resumeTimer(id: id)
+        } else {
+            pauseTimer(id: id)
+        }
+    }
+    static func pauseTimer(id: String) {
         let currentTimeMs = Int(Date().timeIntervalSince1970 * 1000)
         
-        if (isPaused(id: id)) {
-            defaults.set(String(currentTimeMs), forKey: key(id, "currentSegmentStartTimeMs"))
-            defaults.set(false, forKey: key(id, "isPaused"))
-        } else {
-            defaults.set(String(totalSeconds(id: id)), forKey: key(id, "accumulatedSeconds"))
-            defaults.set(String(currentTimeMs), forKey: key(id, "currentSegmentStartTimeMs"))
-            defaults.set(true, forKey: key(id, "isPaused"))
-        }
+        defaults.set(String(totalSeconds(id: id)), forKey: key(id, "accumulatedSeconds"))
+        defaults.set(String(currentTimeMs), forKey: key(id, "currentSegmentStartTimeMs"))
+        defaults.set(true, forKey: key(id, "isPaused"))
+    }
+    private static func resumeTimer(id: String) {
+        let currentTimeMs = Int(Date().timeIntervalSince1970 * 1000)
+        
+        defaults.set(String(currentTimeMs), forKey: key(id, "currentSegmentStartTimeMs"))
+        defaults.set(false, forKey: key(id, "isPaused"))
     }
     
     static func safeFinalTime(id: String) {

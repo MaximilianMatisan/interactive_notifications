@@ -37,25 +37,9 @@ struct EndTimerIntent: LiveActivityIntent {
     init(activityId: String) { self.activityId = activityId }
     
     func perform() async throws -> some IntentResult {
+        SharedTimerState.pauseTimer(id: activityId)
         SharedTimerState.safeFinalTime(id: activityId)
         await SharedTimerState.refresh(id: activityId)
         return .result()
-    }
-    
-    func sendSelfAssessmentNF() async {
-        let content = UNMutableNotificationContent();
-        content.title = "📚 Study session ended."
-        content.body = "Rate your recent study session!"
-        
-        let uuidString = UUID().uuidString
-        
-        let request = UNNotificationRequest(identifier: uuidString, content: content, trigger: nil)
-        let notificationCenter = UNUserNotificationCenter.current()
-        
-        do {
-          try await notificationCenter.add(request)
-        } catch {
-            print("Error: \(error)")
-        }
     }
 }
