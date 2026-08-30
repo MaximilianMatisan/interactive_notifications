@@ -21,32 +21,13 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
     
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: LiveActivitiesAppAttributes.self) { context in
-            let backgroundColor = getBackgroundColor(context: context)
-            let containerColor = getContainerColor(context: context)
-            let textColor = getTextColor(context: context)
-            let isPaused = sharedDefault.bool(forKey: context.attributes.prefixedKey("isPaused"))
+            let timerEnded = sharedDefault.object(forKey: "pendingFinishedSeconds") != nil
             
-            let activityID = context.attributes.id.uuidString
-
-            VStack {
-                HStack{
-                    getShownTime(context: context)
-                        .padding(DEFAULT_PADDING)
-                        .background(
-                            RoundedRectangle(cornerRadius: 2*DEFAULT_CORNER_RADIUS)
-                                .fill(containerColor)
-                        )
-                    Spacer()
-                    createLiveActivityButtons(
-                        activityID: activityID,
-                        isPaused: isPaused,
-                        textColor: textColor,
-                        containerColor: containerColor
-                    )
-                }.padding(DEFAULT_PADDING)
+            if timerEnded {
+                createLockscreenSelfAssessment(context: context)
+            } else {
+                createLockscreenTimerLiveActivity(context: context)
             }
-            .activityBackgroundTint(backgroundColor)
-            .activitySystemActionForegroundColor(Color.black)
 
         } dynamicIsland: { context in
             
@@ -73,7 +54,36 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
             .keylineTint(backgroundColor)
         }
     }
-    func createLiveActivityButtons(
+    
+    func createLockscreenTimerLiveActivity(context: ActivityViewContext<LiveActivitiesAppAttributes>) -> some View {
+        let backgroundColor = getBackgroundColor(context: context)
+        let containerColor = getContainerColor(context: context)
+        let textColor = getTextColor(context: context)
+        let isPaused = sharedDefault.bool(forKey: context.attributes.prefixedKey("isPaused"))
+        
+        let activityID = context.attributes.id.uuidString
+
+        return VStack {
+            HStack{
+                getShownTime(context: context)
+                    .padding(DEFAULT_PADDING)
+                    .background(
+                        RoundedRectangle(cornerRadius: 2*DEFAULT_CORNER_RADIUS)
+                            .fill(containerColor)
+                    )
+                Spacer()
+                createTimerLiveActivityButtons(
+                    activityID: activityID,
+                    isPaused: isPaused,
+                    textColor: textColor,
+                    containerColor: containerColor
+                )
+            }.padding(DEFAULT_PADDING)
+        }
+        .activityBackgroundTint(backgroundColor)
+        .activitySystemActionForegroundColor(Color.black)
+    }
+    func createTimerLiveActivityButtons(
         activityID: String,
         isPaused: Bool,
         textColor: Color,
@@ -85,13 +95,13 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
             createButton(
                 textColor: textColor,
                 containerColor: containerColor,
-                iconSystemName: toggleIcon,
+                buttonIcon: .system(toggleIcon),
                 intent: ToggleTimerIntent(activityId: activityID)
             )
             createButton(
                 textColor: textColor,
                 containerColor: containerColor,
-                iconSystemName: "stop.fill",
+                buttonIcon: .system("stop.fill"),
                 intent: EndTimerIntent(activityId: activityID)
             )
         }
@@ -99,14 +109,11 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
     func createButton(
         textColor: Color,
         containerColor: Color,
-        iconSystemName: String,
+        buttonIcon: ButtonIcon,
         intent: any AppIntent
     ) -> some View  {
         return Button(intent: intent) {
-            Image(systemName: iconSystemName)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 20, height: 20)
+            buttonIcon.view(size: 20)
                 .padding(DEFAULT_PADDING)
                 .foregroundColor(textColor)
                 .background(containerColor,
@@ -146,6 +153,30 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
             return String(format: "%d:%02d:%02d", hs, mins, secs)
         }
     }
+    
+    func createLockscreenSelfAssessment(context: ActivityViewContext<LiveActivitiesAppAttributes>) -> some View {
+        let backgroundColor = getBackgroundColor(context: context)
+        let containerColor = getContainerColor(context: context)
+        let textColor = getTextColor(context: context)
+        
+        let activityID = context.attributes.id.uuidString
+
+        return VStack {
+            HStack{
+                ForEach(Mood.allCases, id: \.self) { mood in
+                    createButton(
+                        textColor: textColor,
+                        containerColor: containerColor,
+                        buttonIcon: .emoji(mood.emoji),
+                        intent: SelfAssessmentIntent(activityId: activityID, moodString: mood.rawValue)
+                    )
+                }
+            }.padding(DEFAULT_PADDING)
+        }
+        .activityBackgroundTint(backgroundColor)
+        .activitySystemActionForegroundColor(Color.black)
+    }
+    
     func getBackgroundColor(context: ActivityViewContext<LiveActivitiesAppAttributes>) -> Color {
         let backgroundColor = sharedDefault.integer(forKey: context.attributes.prefixedKey("backgroundColor"))
         return Color.init(argb: backgroundColor)
