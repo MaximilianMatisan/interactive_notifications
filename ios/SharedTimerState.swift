@@ -54,6 +54,10 @@ enum SharedTimerState {
         defaults.set(String(totalSeconds(id: id)), forKey: "pendingFinishedSeconds")
     }
     
+    static func safeSelfAssessment(id: String, moodString: String) {
+        defaults.set(moodString, forKey: "pendingSelfAssessmentMood")
+    }
+    
     @available(iOS 16.1, *)
     static func refresh(id: String) async {
         for activity in Activity<LiveActivitiesAppAttributes>.activities

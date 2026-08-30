@@ -52,6 +52,16 @@ import ActivityKit
                   result(value)
               } else { result(nil) }
               
+          case "consumeAssessment":
+              let defaults = SharedTimerState.defaults
+              let key = "pendingAssessment"
+              
+              if defaults.object(forKey: key) != nil {
+                  let value = defaults.integer(forKey: key)
+                  defaults.removeObject(forKey: key)
+                  result(value)
+              } else { result(nil) }
+              
           default: result(FlutterMethodNotImplemented)
           }
       }

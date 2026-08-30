@@ -38,8 +38,7 @@ struct EndTimerIntent: LiveActivityIntent {
     
     func perform() async throws -> some IntentResult {
         SharedTimerState.safeFinalTime(id: activityId)
-        await SharedTimerState.end(id: activityId)
-        //await sendSelfAssessmentNF()
+        await SharedTimerState.refresh(id: activityId)
         return .result()
     }
     
