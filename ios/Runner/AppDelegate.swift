@@ -52,12 +52,12 @@ import ActivityKit
                   result(value)
               } else { result(nil) }
               
-          case "consumeAssessment":
+          case "consumeSelfAssessmentMoodString":
               let defaults = SharedTimerState.defaults
-              let key = "pendingAssessment"
+              let key = "pendingSelfAssessmentMood"
               
               if defaults.object(forKey: key) != nil {
-                  let value = defaults.integer(forKey: key)
+                  let value = defaults.string(forKey: key)
                   defaults.removeObject(forKey: key)
                   result(value)
               } else { result(nil) }

@@ -9,4 +9,7 @@ class TimerBridge {
 
   static Future<int?> consumeFinishedSeconds() => 
       _methodChannel.invokeMethod<int>('consumeFinishedSeconds');
+  
+  static Future<String?> consumeSelfAssessmentMoodString() =>
+      _methodChannel.invokeMethod<String>('consumeSelfAssessmentMoodString');
 }
