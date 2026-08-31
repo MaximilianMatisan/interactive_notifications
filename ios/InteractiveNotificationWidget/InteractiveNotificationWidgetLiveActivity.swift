@@ -162,6 +162,9 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
         let activityID = context.attributes.id.uuidString
 
         return VStack {
+            Text("Rate your study session!")
+                .bold()
+                .foregroundStyle(textColor)
             HStack{
                 ForEach(Mood.allCases, id: \.self) { mood in
                     createButton(
@@ -171,8 +174,8 @@ struct InteractiveNotificationWidgetLiveActivity: Widget {
                         intent: SelfAssessmentIntent(activityId: activityID, moodString: mood.rawValue)
                     )
                 }
-            }.padding(DEFAULT_PADDING)
-        }
+            }
+        }.padding(DEFAULT_PADDING)
         .activityBackgroundTint(backgroundColor)
         .activitySystemActionForegroundColor(Color.black)
     }
