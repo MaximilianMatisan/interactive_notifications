@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:interactive_notifications/pages/home_page.dart';
+import 'package:interactive_notifications/util/constants.dart';
+import 'package:live_activities/live_activities.dart';
 
 import '../widgets/self_assessment.dart';
 import '../util/timer_bridge.dart';
@@ -16,9 +18,12 @@ class SelfAssessmentPage extends StatefulWidget {
 
 class _SelfAssessmentPageState extends State<SelfAssessmentPage> with WidgetsBindingObserver {
 
+  final _liveActivityPlugin = LiveActivities();
+
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
+    _liveActivityPlugin.init(appGroupId: appGroupId);
     super.initState();
   }
   @override
@@ -35,15 +40,16 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> with WidgetsBin
   }
 
   Future<void> _checkForNativeAssessment() async {
-    String? mood = await TimerBridge.consumeSelfAssessmentMoodString();
+    String? moodString = await TimerBridge.consumeSelfAssessmentMoodString();
 
-    if (mood != null) {
+    if (moodString != null) {
       _rateStudySession();
-      print('$mood mood assessment');
+      print('$moodString mood assessment');
     }
   }
 
-  void _rateStudySession() {
+  Future<void> _rateStudySession() async {
+    await _liveActivityPlugin.endAllActivities();
     _switchToHomescreen();
   }
   void _switchToHomescreen() {

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:interactive_notifications/pages/self_assessment_page.dart';
+import 'package:interactive_notifications/util/constants.dart';
 import 'package:interactive_notifications/util/timer_bridge.dart';
 import 'package:live_activities/live_activities.dart';
 
@@ -31,7 +32,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _liveActivityPlugin.init(appGroupId: 'group.maxi.test.interactivenotification.a');
+    _liveActivityPlugin.init(appGroupId: appGroupId);
     _syncFromNative();
   }
 
@@ -56,6 +57,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     if (moodString != null) {
       setState(_resetTimerVariables);
       _activityId = null;
+      print('$moodString mood assessment');
       return;
     }
 
