@@ -31,9 +31,8 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _liveActivityPlugin.init(
-        appGroupId: 'group.maxi.test.interactivenotification.a',
-    );
+    _liveActivityPlugin.init(appGroupId: 'group.maxi.test.interactivenotification.a');
+    _syncFromNative();
   }
 
   @override
@@ -52,6 +51,13 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
   Future<void> _syncFromNative() async {
     final finalTime = await TimerBridge.consumeFinishedSeconds();
+    final moodString = await TimerBridge.consumeSelfAssessmentMoodString();
+
+    if (moodString != null) {
+      setState(_resetTimerVariables);
+      _activityId = null;
+      return;
+    }
 
     if (finalTime != null) {
       setState(_resetTimerVariables);
