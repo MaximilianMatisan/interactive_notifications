@@ -1,0 +1,1 @@
+const appGroupId = 'group.maxi.test.interactivenotification.a';
