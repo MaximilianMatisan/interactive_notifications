@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:interactive_notifications/pages/self_assessment_page.dart';
-import 'package:interactive_notifications/util/constants.dart';
-import 'package:interactive_notifications/util/timer_bridge.dart';
+import 'package:interactive_notifications/features/timer/presentation/self_assessment_page.dart';
+import 'package:interactive_notifications/core/util/constants.dart';
+import 'package:interactive_notifications/features/timer/util/timer_bridge.dart';
 import 'package:live_activities/live_activities.dart';
 
-import '../widgets/timer_buttons.dart';
-import '../widgets/timer_display.dart';
+import 'widgets/timer_buttons.dart';
+import 'widgets/timer_display.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});

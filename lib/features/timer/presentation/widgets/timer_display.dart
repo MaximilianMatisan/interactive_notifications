@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../util/format_time.dart';
+import '../../util/format_time.dart';
 
 class TimerDisplay extends StatelessWidget {
   final int secondsPassed;

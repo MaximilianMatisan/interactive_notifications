@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../models/mood.dart';
+import '../../models/mood.dart';
 
 class SelfAssessment extends StatelessWidget {
   const SelfAssessment({super.key, required this.onPress});

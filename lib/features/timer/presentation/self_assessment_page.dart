@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:interactive_notifications/pages/home_page.dart';
-import 'package:interactive_notifications/util/constants.dart';
+import 'package:interactive_notifications/features/timer/presentation/home_page.dart';
+import 'package:interactive_notifications/core/util/constants.dart';
 import 'package:live_activities/live_activities.dart';
 
-import '../widgets/self_assessment.dart';
+import 'widgets/self_assessment.dart';
 import '../util/timer_bridge.dart';
 
 

@@ -38,6 +38,7 @@ dependencies:
   live_activities: ^2.5.1
   flutter_dotenv: ^6.0.1
   http: ^1.6.0
+  dio: ^5.11.1
 
 dev_dependencies:
   flutter_test:
