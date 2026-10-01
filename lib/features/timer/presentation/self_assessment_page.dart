@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:interactive_notifications/features/timer/presentation/home_page.dart';
+import 'package:interactive_notifications/core/navigation/main_environment.dart';
 import 'package:interactive_notifications/core/util/constants.dart';
 import 'package:live_activities/live_activities.dart';
 
@@ -55,7 +55,7 @@ class _SelfAssessmentPageState extends State<SelfAssessmentPage> with WidgetsBin
   void _switchToHomescreen() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => MyHomePage())
+      MaterialPageRoute(builder: (context) => MainEnvironment())
     );
   }
 

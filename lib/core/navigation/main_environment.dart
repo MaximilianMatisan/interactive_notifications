@@ -1,0 +1,36 @@
+import 'package:flutter/material.dart';
+import 'package:interactive_notifications/features/timer/presentation/home_page.dart';
+
+import '../../features/settings/presentation/settings_page.dart';
+
+class MainEnvironment extends StatefulWidget {
+  const MainEnvironment({super.key});
+
+  @override
+  State<MainEnvironment> createState() => _MainEnvironmentState();
+}
+
+class _MainEnvironmentState extends State<MainEnvironment> {
+  int _currentIndex = 0;
+
+  final List<Widget> _pages = const [MyHomePage(), SettingsPage()];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: IndexedStack(index: _currentIndex, children: _pages),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+        ],
+      ),
+    );
+  }
+}

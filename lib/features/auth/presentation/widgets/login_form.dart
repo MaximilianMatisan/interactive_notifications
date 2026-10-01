@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:interactive_notifications/core/navigation/main_environment.dart';
 import 'package:interactive_notifications/features/auth/data/auth_repository.dart';
 
-import '../../../timer/presentation/home_page.dart';
 import '../../../../core/style/text_field.dart';
 import 'login_header.dart';
 
@@ -113,7 +113,7 @@ class _LoginFormState extends State<LoginForm> {
                   if (!context.mounted) return;
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (_) => MyHomePage()),
+                    MaterialPageRoute(builder: (_) => MainEnvironment()),
                   );
                 } catch (e) {
                   if (!context.mounted) return;
@@ -124,7 +124,7 @@ class _LoginFormState extends State<LoginForm> {
                 }
               },
               child: Text(
-                'LOGIN',
+                'LOG IN',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: Theme.of(context).colorScheme.onPrimary,
                   fontWeight: FontWeight.bold,
